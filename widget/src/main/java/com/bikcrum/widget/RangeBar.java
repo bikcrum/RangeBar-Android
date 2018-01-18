@@ -15,6 +15,7 @@ import android.view.View;
 public class RangeBar extends View {
 
     private Paint paint = new Paint();
+    private int barWidth;
 
     public RangeBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -28,8 +29,8 @@ public class RangeBar extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        int desiredWidth = 100;
-        int desiredHeight = 50;
+        int desiredWidth = 80;
+        int desiredHeight = 40;
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -76,15 +77,20 @@ public class RangeBar extends View {
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(20);
 
-        canvas.drawLine(0, 10, 500, 10, paint);
+        canvas.drawLine(50, 10, barWidth - 50, 10, paint);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w < h) {
+
         } else {
+
         }
+        barWidth = w;
+
+
     }
 
 

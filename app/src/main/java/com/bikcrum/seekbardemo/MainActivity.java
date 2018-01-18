@@ -12,8 +12,5 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SeekBar seekBar = findViewById(R.id.seekbar);
-
-        Log.i("test", "width = " + seekBar.getWidth() + " height = " + seekBar.getHeight());
     }
 }
