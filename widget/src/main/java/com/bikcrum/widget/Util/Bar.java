@@ -3,30 +3,32 @@ package com.bikcrum.widget.Util;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.util.Log;
+
+import com.bikcrum.widget.RangeBar;
 
 /**
  * Created by LENOVO on 1/17/2018.
  */
 
 public class Bar {
+    private final String TAG = "biky";
     private float width;
     private int color;
-    private float length;
+
     private PointF startPoint;
+    private PointF endPoint;
 
     private Paint paint = new Paint();
 
-    public Bar(float width, int color, float length, PointF startPoint) {
-        this.width = width;
-        this.color = color;
-        this.length = length;
-        this.startPoint = startPoint;
-        initPaint();
-    }
+    private Bound bound;
 
-    protected Bar(float width, int color) {
+    public Bar(int color, int width, Bound bound) {
         this.width = width;
         this.color = color;
+        this.bound = new Bound(bound);
+        this.startPoint = this.bound.start;
+        this.endPoint = this.bound.end;
         initPaint();
     }
 
@@ -38,15 +40,15 @@ public class Bar {
     }
 
     public void show(Canvas canvas) {
-        canvas.drawLine(startPoint.x, startPoint.y, startPoint.x + length, startPoint.y, paint);
+        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, startPoint.y, paint);
     }
 
+    public void update(float x1, float x2, int max) {
+        float stepGap = (bound.end.x - bound.start.x) / max;
+        startPoint.x = x1;
 
-    protected  float getY() {
-        return startPoint.y;
-    }
-
-    protected  Paint getPaint() {
-        return paint;
+        int startIndex = Math.round((bound.end.x - bound.start.x) / stepGap);
+        Log.d(TAG, "start index = " + startIndex);
+        // endPoint.x = bound.start.x + Math.round(x2 / stepGap) * stepGap;
     }
 }

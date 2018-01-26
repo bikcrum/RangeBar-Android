@@ -36,13 +36,7 @@ public class Thumb {
         paint.setColor(color);
     }
 
-    public void show(Canvas canvas, Bar bar, float x) {
-        if (pressed) {
-            canvas.drawCircle(x, bar.getY(), widthPressed / 2f, paint);
-        } else {
-            canvas.drawCircle(x, bar.getY(), width / 2f, paint);
-        }
-    }
+
 
     public void press() {
         pressed = true;
