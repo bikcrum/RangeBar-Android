@@ -1,4 +1,4 @@
-package com.bikcrum.seekbardemo;
+package com.bikcrum.rangebardemo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

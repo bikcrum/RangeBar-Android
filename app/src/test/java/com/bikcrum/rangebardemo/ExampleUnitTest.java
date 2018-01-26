@@ -1,4 +1,4 @@
-package com.bikcrum.seekbardemo;
+package com.bikcrum.rangebardemo;
 
 import org.junit.Test;
 
