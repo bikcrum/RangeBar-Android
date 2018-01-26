@@ -26,10 +26,7 @@ public class RangeBar extends View {
     private int max;
     private int startIndex;
     private int endIndex;
-    private ColorStateList colorTint;
-    private float barWidth;
-    private float thumbWidth;
-    private ColorStateList thumbDrawable;
+    private int colorTint;
 
     //local vars
     private PointF startThumbPoint;
@@ -42,20 +39,15 @@ public class RangeBar extends View {
     private float stepGap;
     private Paint paint = new Paint();
 
+    //local vars
+    private int thumbWidth = 30;
+    private int thumbWidthPressed = 40;
+    private int barWidth = 6;
+
     public RangeBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0);
     }
-
-    private int getColor(int colorAttr,int defaultColor) throws Exception {
-        TypedValue typedValue = new TypedValue();
-        TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[] { colorAttr });
-        int color = a.getColor(0, defaultColor);
-        a.recycle();
-        return color;
-    }
-
-    //examples accessing colors
 
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -64,34 +56,7 @@ public class RangeBar extends View {
         max = a.getInteger(R.styleable.RangeBar_max, 100);
         startIndex = a.getInteger(R.styleable.RangeBar_startIndex, 0);
         endIndex = a.getInteger(R.styleable.RangeBar_endIndex, max - 1);
-        colorTint = a.getColorStateList(R.styleable.RangeBar_colorTint);
-        barWidth = a.getDimension(R.styleable.RangeBar_barWidth, 10);
-        thumbWidth = a.getDimension(R.styleable.RangeBar_thumbWidth, 10);
-        thumbDrawable = a.getColorStateList(R.styleable.RangeBar_thumbDrawable);
-
-        if (thumbDrawable == null) {
-            int[][] states = new int[][] {
-                    new int[] { android.R.attr.state_enabled}, // enabled
-                    new int[] {-android.R.attr.state_enabled}, // disabled
-                    new int[] {-android.R.attr.state_checked}, // unchecked
-                    new int[] { android.R.attr.state_pressed}  // pressed
-            };
-/*
-            int colorAccent;
-            try{
-            colorPressed = getColor(R.attr.colorAccent,Color.RED);
-            color = getColor(R.attr.colorPrimary,Color.parseColor("#FF4081"));
-
-
-            int[] colors = new int[] {
-                    getColor(R.attr.colorAccent),
-                    Color.RED,
-                    Color.GREEN,
-                    getColor(R.attr.colorPrimary)
-            };
-*/
-        //    thumbDrawable = new ColorStateList(states, colors);
-        }
+        colorTint = a.getColor(R.styleable.RangeBar_colorTint, Color.parseColor("#FF4081"));
 
         a.recycle();
 
@@ -110,12 +75,12 @@ public class RangeBar extends View {
         int desiredWidth = 80;
         int desiredHeight = 40;
 
-        if (Math.max(thumbWidth, barWidth) > desiredHeight) {
-            desiredHeight = (int) Math.max(thumbWidth, barWidth);
+        if (Math.max(thumbWidthPressed, barWidth) > desiredHeight) {
+            desiredHeight = Math.max(thumbWidthPressed, barWidth);
         }
 
-        if (Math.max(thumbWidth, barWidth) > desiredWidth) {
-            desiredWidth = (int) Math.max(thumbWidth, barWidth);
+        if (Math.max(thumbWidthPressed, barWidth) > desiredWidth) {
+            desiredWidth = Math.max(thumbWidthPressed, barWidth);
         }
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -169,54 +134,60 @@ public class RangeBar extends View {
 
         paint.reset();
 
-        paint.setColor(thumbDrawable.getColorForState(new int[]{android.R.attr.state_enabled}, Color.RED));
+        paint.setColor(colorTint);
         paint.setStrokeWidth(barWidth);
         paint.setDither(true);
         paint.setStrokeCap(Paint.Cap.ROUND);
 
         canvas.drawLine(startThumbPoint.x, startThumbPoint.y, endThumbPoint.x, endThumbPoint.y, paint);
 
-        canvas.drawCircle(startThumbPoint.x, startThumbPoint.y, thumbWidth / 2, paint);
-
-        canvas.drawCircle(endThumbPoint.x, endThumbPoint.y, thumbWidth / 2, paint);
-
-
-    }
-/*
-    private int getThumbColor(boolean pressed) {
-        TypedValue typedValue = new TypedValue();
-        TypedArray a = mContext.obtainStyledAttributes(typedValue.data, new int[] { colorAttr });
-        int color = a.getColor(0, 0);
-        a.recycle();
-        return color;
-
-        if (thumbDrawable == null) {
-            if (isEnabled()) {
-                if (pressed) {
-                    return getResources().getColor(R.color.colorPrimary);
-                }
-                return Color.;
-            } else {
-                return Color.parseColor("#eeeeee");
-            }
+        int radius;
+        if (actionDown) {
+            radius = thumbWidthPressed / 2;
         } else {
-            mTempStates[0] = isEnabled() ? android.R.attr.state_enabled : -android.R.attr.state_enabled;
-            mTempStates[1] = pressed ? android.R.attr.state_pressed : -android.R.attr.state_pressed;
-            return sliderColor.getColorForState(mTempStates, 0);
+            radius = thumbWidth / 2;
         }
+
+        canvas.drawCircle(startThumbPoint.x, startThumbPoint.y, radius, paint);
+
+        canvas.drawCircle(endThumbPoint.x, endThumbPoint.y, radius, paint);
     }
-*/
+
+    /*
+        private int getThumbColor(boolean pressed) {
+            TypedValue typedValue = new TypedValue();
+            TypedArray a = mContext.obtainStyledAttributes(typedValue.data, new int[] { colorAttr });
+            int color = a.getColor(0, 0);
+            a.recycle();
+            return color;
+
+            if (thumbDrawable == null) {
+                if (isEnabled()) {
+                    if (pressed) {
+                        return getResources().getColor(R.color.colorPrimary);
+                    }
+                    return Color.;
+                } else {
+                    return Color.parseColor("#eeeeee");
+                }
+            } else {
+                mTempStates[0] = isEnabled() ? android.R.attr.state_enabled : -android.R.attr.state_enabled;
+                mTempStates[1] = pressed ? android.R.attr.state_pressed : -android.R.attr.state_pressed;
+                return sliderColor.getColorForState(mTempStates, 0);
+            }
+        }
+    */
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        startBarPoint = new PointF(thumbWidth / 2, h / 2);
-        endBarPoint = new PointF(w - thumbWidth / 2, h / 2);
+        startBarPoint = new PointF(thumbWidthPressed / 2, h / 2);
+        endBarPoint = new PointF(w - thumbWidthPressed / 2, h / 2);
 
-        startThumbPoint = new PointF(thumbWidth / 2, h / 2);
-        endThumbPoint = new PointF(w - thumbWidth / 2, h / 2);
+        startThumbPoint = new PointF(thumbWidthPressed / 2, h / 2);
+        endThumbPoint = new PointF(w - thumbWidthPressed / 2, h / 2);
 
-        barLength = w - thumbWidth;
+        barLength = w - thumbWidthPressed;
 
         stepGap = barLength / max;
 
@@ -228,6 +199,7 @@ public class RangeBar extends View {
     }
 
     boolean nearStartThumb = true;
+    boolean actionDown = false;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -239,23 +211,42 @@ public class RangeBar extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
+                actionDown = true;
                 nearStartThumb = nearStartThumb(new PointF(x, y));
 
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (nearStartThumb) {
+                if (x >= startBarPoint.x && x <= endBarPoint.x) {
 
-                    if (x >= startBarPoint.x && x <= endBarPoint.x) {
+                    if (nearStartThumb) {
 
-                        startIndex = (int) Math.round((x - thumbWidth / 2f) / stepGap);
+                        startIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
                         print("start index = " + startIndex);
 
                         startThumbPoint.x = startIndex * stepGap + startBarPoint.x;
-                    }
-                } else {
-                    if (x >= startBarPoint.x && x <= endBarPoint.x) {
 
-                        endIndex = (int) Math.round((x - thumbWidth / 2f) / stepGap);
+                    } else {
+
+                        endIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
+                        print("end index = " + endIndex);
+
+                        endThumbPoint.x = endIndex * stepGap + startBarPoint.x;
+                    }
+                }
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (x >= startBarPoint.x && x <= endBarPoint.x) {
+
+                    if (nearStartThumb) {
+
+                        startIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
+                        print("start index = " + startIndex);
+
+                        startThumbPoint.x = startIndex * stepGap + startBarPoint.x;
+
+                    } else {
+
+                        endIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
                         print("end index = " + endIndex);
 
                         endThumbPoint.x = endIndex * stepGap + startBarPoint.x;
@@ -263,9 +254,10 @@ public class RangeBar extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-
+                actionDown = false;
                 break;
             default:
+                actionDown = false;
                 return super.onTouchEvent(event);
         }
 
