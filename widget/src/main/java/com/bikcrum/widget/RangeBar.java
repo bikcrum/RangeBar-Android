@@ -14,6 +14,9 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.bikcrum.widget.Util.Bar;
+import com.bikcrum.widget.Util.ConnectingLine;
+import com.bikcrum.widget.Util.Measure;
 import com.bikcrum.widget.Util.Thumb;
 
 /**
@@ -43,6 +46,10 @@ public class RangeBar extends View {
     private int thumbWidth = 30;
     private int thumbWidthPressed = 40;
     private int barWidth = 6;
+
+    private Bar bar;
+    private ConnectingLine connectingLine;
+    private Measure measure;
 
     public RangeBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -123,34 +130,24 @@ public class RangeBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        paint.reset();
+        bar.show(canvas);
+        connectingLine.show(canvas, bar, startThumbPoint.x, endThumbPoint.x);
+        startThumb.show(canvas, bar, startThumbPoint.x);
+        endThumb.show(canvas, bar, endThumbPoint.x);
 
-        paint.setColor(Color.LTGRAY);
-        paint.setStrokeWidth(barWidth);
-        paint.setDither(true);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-
-        canvas.drawLine(startBarPoint.x, startBarPoint.y, endBarPoint.x, endBarPoint.y, paint);
-
-        paint.reset();
-
-        paint.setColor(colorTint);
-        paint.setStrokeWidth(barWidth);
-        paint.setDither(true);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-
-        canvas.drawLine(startThumbPoint.x, startThumbPoint.y, endThumbPoint.x, endThumbPoint.y, paint);
-
-        int radius;
         if (actionDown) {
-            radius = thumbWidthPressed / 2;
+            startThumb.press();
+            endThumb.press();
         } else {
-            radius = thumbWidth / 2;
+            startThumb.release();
+            endThumb.release();
         }
-
-        canvas.drawCircle(startThumbPoint.x, startThumbPoint.y, radius, paint);
+/*
 
         canvas.drawCircle(endThumbPoint.x, endThumbPoint.y, radius, paint);
+        canvas.drawCircle(startThumbPoint.x, startThumbPoint.y, radius, paint);
+
+        canvas.drawCircle(endThumbPoint.x, endThumbPoint.y, radius, paint);*/
     }
 
     /*
@@ -181,17 +178,32 @@ public class RangeBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        startBarPoint = new PointF(thumbWidthPressed / 2, h / 2);
-        endBarPoint = new PointF(w - thumbWidthPressed / 2, h / 2);
+        measure = new Measure(thumbWidth, w, h);
 
-        startThumbPoint = new PointF(thumbWidthPressed / 2, h / 2);
-        endThumbPoint = new PointF(w - thumbWidthPressed / 2, h / 2);
+        startThumb = new Thumb(colorTint, thumbWidth, thumbWidthPressed);
+        endThumb = new Thumb(colorTint, thumbWidth, thumbWidthPressed);
+
+        //calculate different sizes according to thumb width/height
+
+        //     startBarPoint = new PointF(thumbWidthPressed / 2f, h / 2f);
+        //  endBarPoint = new PointF(w - thumbWidthPressed / 2f, h / 2f);
+
+        startBarPoint = measure.getStartBarPoint();
+        endBarPoint = measure.getEndBarPoint();
+
+        //   startThumbPoint = new PointF(thumbWidthPressed / 2f, h / 2f);
+        //    endThumbPoint = new PointF(w - thumbWidthPressed / 2f, h / 2f);
 
         barLength = w - thumbWidthPressed;
 
         stepGap = barLength / max;
 
         print("steps gap = " + stepGap);
+
+        bar = new Bar(barWidth, Color.LTGRAY, w - thumbWidthPressed, new PointF(thumbWidthPressed / 2f, h / 2f));
+        connectingLine = new ConnectingLine(barWidth, colorTint);
+
+
     }
 
     void print(String str) {
