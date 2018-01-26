@@ -13,22 +13,31 @@ import com.bikcrum.widget.RangeBar;
 
 public class Bar {
     private final String TAG = "biky";
-    private float width;
-    private int color;
 
-    private PointF startPoint;
-    private PointF endPoint;
+    //constructor args
+    private int color;
+    private int width;
+    private int windowWidth;
+    private int windowHeight;
+    private int hPadding;
+
+    //calculated args
+    private PointF start = new PointF();
+    private PointF end = new PointF();
 
     private Paint paint = new Paint();
 
-    private Bound bound;
-
-    public Bar(int color, int width, Bound bound) {
-        this.width = width;
+    public Bar(int color, int width, int windowWidth, int windowHeight, int hPadding) {
         this.color = color;
-        this.bound = new Bound(bound);
-        this.startPoint = this.bound.start;
-        this.endPoint = this.bound.end;
+        this.width = width;
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
+        this.hPadding = hPadding;
+
+        start.x = hPadding;
+        end.y = start.y = windowHeight/2f;
+        end.x = windowWidth - hPadding;
+
         initPaint();
     }
 
@@ -40,15 +49,17 @@ public class Bar {
     }
 
     public void show(Canvas canvas) {
-        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, startPoint.y, paint);
+        //Log.d(TAG, "x1 = " + hPadding + ",y1=" + (windowHeight / 2f) + ",x2=" + (width - hPadding) + "y,2=" + (windowHeight / 2f));
+        canvas.drawLine(start.x,start.y,end.x,end.y, paint);
     }
 
     public void update(float x1, float x2, int max) {
-        float stepGap = (bound.end.x - bound.start.x) / max;
-        startPoint.x = x1;
+        float stepGap = (windowWidth - hPadding * 2f) / max;
 
-        int startIndex = Math.round((bound.end.x - bound.start.x) / stepGap);
-        Log.d(TAG, "start index = " + startIndex);
-        // endPoint.x = bound.start.x + Math.round(x2 / stepGap) * stepGap;
+        int startIndex = Math.round((x1 - hPadding) / stepGap);
+
+        Log.d(TAG, "start iundex = " + startIndex);
+
+        start.x = hPadding + startIndex * stepGap;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class RangeBar extends View {
 
     private Bar bar;
     private Bar connectingLine;
+    private Path path;
 
 
     public Bound bound = new Bound();
@@ -70,6 +72,7 @@ public class RangeBar extends View {
 
         int desiredWidth = 80;
         int desiredHeight = 40;
+
 
         if (Math.max(thumbWidthPressed, barWidth) > desiredHeight) {
             desiredHeight = Math.max(thumbWidthPressed, barWidth);
@@ -169,11 +172,7 @@ public class RangeBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        bound.start.x = thumbWidthPressed / 2f;
-        bound.end.x = w - bound.start.x;
-        bound.start.y = bound.end.y = h / 2f;
-
-        bar = new Bar(Color.LTGRAY, barWidth, bound);
+        bar = new Bar(Color.LTGRAY, barWidth, w, h, thumbWidthPressed);
 
         //startThumb = new Thumb(colorTint, 1, widget);
         //endThumb = new Thumb(colorTint, max - 2, widget);
@@ -221,7 +220,7 @@ public class RangeBar extends View {
 
         PointF current = new PointF(x, y);
 
-        bar.update(x, 200, 20);
+       bar.update(x, 200, 20);
 
 /*
         switch (event.getAction()) {
