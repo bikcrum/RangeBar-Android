@@ -9,8 +9,6 @@ import android.graphics.PointF;
  */
 
 public class Bar {
-    private final String TAG = "biky";
-
     //constructor args
     private int color;
     private float height;
