@@ -1,6 +1,6 @@
 # RangeBar-Android
 
-### Android doesn't provide rangebar officially because of its limited use. But don't worry you can find it here.
+#### Android doesn't provide rangebar officially because of its limited use. But don't worry you can find it here.
 
 ## Here is how to use it
 
