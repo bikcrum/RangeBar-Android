@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
     <declare-styleable name="RangeBar">
         <attr name="max" format="integer" />
-        <attr name="startIndex" format="integer" />
-        <attr name="endIndex" format="integer" />
+        <attr name="progressStart" format="integer" />
+        <attr name="progressEnd" format="integer" />
         <attr name="colorTint" format="reference|color" />
         <attr name="thumbRadius" format="dimension" />
-        <attr name="barHeight" format="dimension"/>
+        <attr name="isRange" format="boolean" />
+        <attr name="barHeight" format="dimension" />
+
     </declare-styleable>
+
 
 </resources>

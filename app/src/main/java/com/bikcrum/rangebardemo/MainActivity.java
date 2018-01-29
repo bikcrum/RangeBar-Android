@@ -38,24 +38,5 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "on end tracking touch");
             }
         });
-
-        sBar = findViewById(R.id.seekbar);
-        sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                bar.setEndIndex(i);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
     }
 }

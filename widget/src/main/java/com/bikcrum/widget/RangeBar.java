@@ -22,8 +22,8 @@ import com.bikcrum.widget.interfaces.OnRangeChangeListener;
 public class RangeBar extends View {
 
     private int max;
-    private int startIndex;
-    private int endIndex;
+    private int progressStart;
+    private int progressEnd;
     private int colorTint;
 
     private float thumbRadius;
@@ -31,6 +31,7 @@ public class RangeBar extends View {
 
     private Bar bar;
     private ConnectingLine connectingLine;
+    private boolean isRange;
 
     private OnRangeChangeListener onRangeChangeListener;
 
@@ -62,12 +63,13 @@ public class RangeBar extends View {
         thumbRadius = a.getDimension(R.styleable.RangeBar_thumbRadius, dpToPx(8));
         barHeight = a.getDimension(R.styleable.RangeBar_barHeight, dpToPx(3));
 
-        if (max < 4) {
-            max = 4;
+        if (max < 3) {
+            max = 3;
         }
 
-        startIndex = a.getInteger(R.styleable.RangeBar_startIndex, 1);
-        endIndex = a.getInteger(R.styleable.RangeBar_endIndex, max - 2);
+        progressStart = a.getInteger(R.styleable.RangeBar_progressStart, 0);
+        progressEnd = a.getInteger(R.styleable.RangeBar_progressEnd, max - 1);
+        isRange = a.getBoolean(R.styleable.RangeBar_isRange, true);
 
         a.recycle();
     }
@@ -137,9 +139,10 @@ public class RangeBar extends View {
         bar = new Bar(Color.LTGRAY, barHeight, w, h, thumbRadius);
 
         connectingLine = new ConnectingLine(colorTint, barHeight, w, h, thumbRadius, max);
+        connectingLine.setRangeEnabled(isRange);
 
-        connectingLine.setStartIndex(startIndex);
-        connectingLine.setEndIndex(endIndex);
+        connectingLine.setProgressStart(progressStart);
+        connectingLine.setProgressEnd(progressEnd);
     }
 
     public int getMax() {
@@ -148,38 +151,51 @@ public class RangeBar extends View {
 
     public void setMax(int max) {
         this.max = max;
+        if (max < 3) {
+            max = 3;
+        }
         if (connectingLine != null) connectingLine.setMax(max);
         invalidate();
     }
 
-    public int getStartIndex() {
-        return startIndex;
+    public int getProgressStart() {
+        return progressStart;
     }
 
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
-        if (startIndexPrev != startIndex && connectingLine != null) {
-            connectingLine.setStartIndex(startIndex);
+    public void setProgressStart(int progressStart) {
+        if (progressStart < 0) {
+            progressStart = 0;
+        } else if (progressStart > max) {
+            progressStart = max;
+        }
+        this.progressStart = progressStart;
+        if (startIndexPrev != progressStart && connectingLine != null) {
+            connectingLine.setProgressStart(progressStart);
             if (onRangeChangeListener != null) {
-                onRangeChangeListener.onRangeChanged(this, Math.min(startIndex, endIndex), Math.max(startIndex, endIndex), true);
+                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
             }
-            startIndexPrev = startIndex;
+            startIndexPrev = progressStart;
             invalidate();
         }
     }
 
-    public int getEndIndex() {
-        return endIndex;
+    public int getProgressEnd() {
+        return progressEnd;
     }
 
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
-        if (endIndexPrev != endIndex && connectingLine != null) {
-            connectingLine.setEndIndex(endIndex);
+    public void setProgressEnd(int progressEnd) {
+        if (progressEnd < 0) {
+            progressEnd = 0;
+        } else if (progressEnd > max) {
+            progressEnd = max;
+        }
+        this.progressEnd = progressEnd;
+        if (endIndexPrev != progressEnd && connectingLine != null) {
+            connectingLine.setProgressEnd(progressEnd);
             if (onRangeChangeListener != null) {
-                onRangeChangeListener.onRangeChanged(this, Math.min(startIndex, endIndex), Math.max(startIndex, endIndex), true);
+                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
             }
-            endIndexPrev = endIndex;
+            endIndexPrev = progressEnd;
             invalidate();
         }
         invalidate();
@@ -220,18 +236,18 @@ public class RangeBar extends View {
         }
 
         if (connectingLine != null) {
-            startIndex = connectingLine.getStartIndex();
-            endIndex = connectingLine.getEndIndex();
+            progressStart = connectingLine.getProgressStart();
+            progressEnd = connectingLine.getProgressEnd();
         }
 
-        if (startIndex != startIndexPrev || endIndex != endIndexPrev) {
+        if (progressStart != startIndexPrev || progressEnd != endIndexPrev) {
             if (onRangeChangeListener != null) {
-                onRangeChangeListener.onRangeChanged(this, Math.min(startIndex, endIndex), Math.max(startIndex, endIndex), true);
+                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
             }
         }
 
-        startIndexPrev = startIndex;
-        endIndexPrev = endIndex;
+        startIndexPrev = progressStart;
+        endIndexPrev = progressEnd;
 
         invalidate();
         return true;

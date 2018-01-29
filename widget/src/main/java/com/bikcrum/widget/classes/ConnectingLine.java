@@ -13,8 +13,10 @@ public class ConnectingLine extends Bar {
     private float endThumbRadius;
 
     private float stepGap;
-    private int startIndex;
-    private int endIndex;
+    private int progressStart;
+    private int progressEnd;
+
+    private boolean isRange;
 
     protected enum Action {
         PRESS_START_THUMB,
@@ -28,21 +30,26 @@ public class ConnectingLine extends Bar {
     public ConnectingLine(int color, float height, int windowWidth, int windowHeight, float thumbRadius, int max) {
         super(color, height, windowWidth, windowHeight, thumbRadius);
 
-
         startThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
         endThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
 
-        stepGap = (getWindowWidth() - getThumbRadius() * 2f) / (max - 1);
+        stepGap = (getWindowWidth() - getThumbRadius() * 2f) / max;
+    }
+
+    public void setRangeEnabled(boolean isRange) {
+        this.isRange = isRange;
     }
 
     @Override
     public void show(Canvas canvas) {
-        getStart().x = getThumbRadius() + startIndex * stepGap;
-        getEnd().x = getThumbRadius() + endIndex * stepGap;
+        getStart().x = getThumbRadius() + progressStart * stepGap;
+        getEnd().x = getThumbRadius() + progressEnd * stepGap;
 
         super.show(canvas);
 
-        canvas.drawCircle(getStart().x, getStart().y, startThumbRadius, getPaint());
+        if (isRange) {
+            canvas.drawCircle(getStart().x, getStart().y, startThumbRadius, getPaint());
+        }
         canvas.drawCircle(getEnd().x, getEnd().y, endThumbRadius, getPaint());
     }
 
@@ -51,42 +58,42 @@ public class ConnectingLine extends Bar {
 
         if (action == Action.PRESS_START_THUMB) {
 
-            startIndex = index;
+            progressStart = index;
 
             startThumbRadius = getThumbRadius();
             endThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
 
         } else if (action == Action.PRESS_END_THUMB) {
 
-            endIndex = index;
+            progressEnd = index;
 
             startThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
             endThumbRadius = getThumbRadius();
         }
     }
 
-    public int getStartIndex() {
-        return startIndex;
+    public int getProgressStart() {
+        return progressStart;
     }
 
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
+    public void setProgressStart(int startIndex) {
+        this.progressStart = startIndex;
     }
 
-    public int getEndIndex() {
-        return endIndex;
+    public int getProgressEnd() {
+        return progressEnd;
     }
 
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
+    public void setProgressEnd(int progressEnd) {
+        this.progressEnd = progressEnd;
     }
 
     public void setMax(int max) {
-        stepGap = (getWindowWidth() - getThumbRadius() * 2f) / (max - 1);
+        stepGap = (getWindowWidth() - getThumbRadius() * 2f) / max;
     }
 
     public void press(float x) {
-        if (Math.abs(getStart().x - x) < Math.abs(getEnd().x - x)) {
+        if (Math.abs(getStart().x - x) < Math.abs(getEnd().x - x) && isRange) {
             action = Action.PRESS_START_THUMB;
         } else {
             action = Action.PRESS_END_THUMB;
