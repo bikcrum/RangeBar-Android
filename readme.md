@@ -6,8 +6,6 @@
 
 ### Add this to root build.gradle (Project)
 
-`
-
 allprojects {
     repositories {
         ...
@@ -16,11 +14,8 @@ allprojects {
     }
 }
 
-`
-
 ### Add this to build.gradle (Module)
 
-`
 
 dependencies {
     ...
@@ -28,25 +23,20 @@ dependencies {
     compile 'com.github.bikcrum:RangeBar-Android:1.1'
 }
 
-`
 
 ### To use it your code
 
 Simply add the View to your layout
 
-`
-  <com.bikcrum.widget.RangeBar
+<com.bikcrum.widget.RangeBar
         android:id="@+id/range_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
         app:max="50" />
 
-`
 
 ### Add OnRangeChange listener
-
-`
 
 RangeBar bar = findViewById(R.id.range_bar);
 
@@ -68,11 +58,9 @@ RangeBar bar = findViewById(R.id.range_bar);
             }
         });
 
-`
 
 ### Make it SeekBar
 
-`
   <com.bikcrum.widget.RangeBar
         android:id="@+id/range_bar"
         android:layout_width="match_parent"
@@ -80,5 +68,4 @@ RangeBar bar = findViewById(R.id.range_bar);
         android:padding="20dp"
         android:isRange="false"
         app:max="50" />
-`
 
