@@ -54,18 +54,22 @@ public class ConnectingLine extends Bar {
     }
 
     public void update(float x) {
-        int index = Math.round((x - getThumbRadius()) / stepGap);
+        if (x < getThumbRadius() || x > getWindowWidth() - getThumbRadius()) {
+            return;
+        }
+
+        int progress = Math.round((x - getThumbRadius()) / stepGap);
 
         if (action == Action.PRESS_START_THUMB) {
 
-            progressStart = index;
+            progressStart = progress;
 
             startThumbRadius = getThumbRadius();
             endThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
 
         } else if (action == Action.PRESS_END_THUMB) {
 
-            progressEnd = index;
+            progressEnd = progress;
 
             startThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
             endThumbRadius = getThumbRadius();

@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -211,6 +212,8 @@ public class RangeBar extends View {
             return super.onTouchEvent(event);
         }
         float x = event.getX();
+
+        Log.d("biky", "touch action = " + event.getAction());
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

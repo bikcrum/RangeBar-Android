@@ -12,7 +12,6 @@
         android:id="@+id/range_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        app:max="50" />
+        android:padding="20dp" />
 
 </LinearLayout>
