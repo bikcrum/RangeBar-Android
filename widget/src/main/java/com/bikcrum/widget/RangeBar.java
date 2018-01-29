@@ -55,7 +55,7 @@ public class RangeBar extends View {
 
         max = a.getInteger(R.styleable.RangeBar_max, 100);
         try {
-            color = a.getColor(R.styleable.RangeBar_thumbColor, getDefaultColorTint());
+            color = a.getColor(R.styleable.RangeBar_rangeColor, getDefaultColorTint());
         } catch (Exception e) {
             color = getDefaultColorTint();
             e.printStackTrace();
