@@ -13,7 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.bikcrum.widget.classes.Bar;
-import com.bikcrum.widget.classes.ConnectingLine;
+import com.bikcrum.widget.classes.ConnectingThumb;
 import com.bikcrum.widget.interfaces.OnRangeChangeListener;
 
 /**
@@ -31,7 +31,7 @@ public class RangeBar extends View {
     private float barHeight;
 
     private Bar bar;
-    private ConnectingLine connectingLine;
+    private ConnectingThumb connectingThumb;
     private boolean isRange;
 
     private OnRangeChangeListener onRangeChangeListener;
@@ -55,9 +55,9 @@ public class RangeBar extends View {
 
         max = a.getInteger(R.styleable.RangeBar_max, 100);
         try {
-            color = a.getColor(R.styleable.RangeBar_rangeColor, getDefaultColorTint());
+            color = a.getColor(R.styleable.RangeBar_rangeColor, getDefaultRangeColor());
         } catch (Exception e) {
-            color = getDefaultColorTint();
+            color = getDefaultRangeColor();
             e.printStackTrace();
         }
 
@@ -130,13 +130,13 @@ public class RangeBar extends View {
         super.onDraw(canvas);
 
         if (bar != null) bar.show(canvas);
-        if (connectingLine != null) {
+        if (connectingThumb != null) {
             if(isEnabled()){
-                connectingLine.setColor(color);
+                connectingThumb.setRangeColor(color);
             }else{
-                connectingLine.setColor(Color.GRAY);
+                connectingThumb.setRangeColor(Color.GRAY);
             }
-            connectingLine.show(canvas);
+            connectingThumb.show(canvas);
         }
     }
 
@@ -147,14 +147,14 @@ public class RangeBar extends View {
         bar = new Bar(Color.LTGRAY, barHeight, w, h, thumbRadius);
 
         if(isEnabled()) {
-            connectingLine = new ConnectingLine(color, barHeight, w, h, thumbRadius, max);
+            connectingThumb = new ConnectingThumb(color, barHeight, w, h, thumbRadius, max);
         }else{
-            connectingLine = new ConnectingLine(Color.GRAY, barHeight, w, h, thumbRadius, max);
+            connectingThumb = new ConnectingThumb(Color.GRAY, barHeight, w, h, thumbRadius, max);
         }
-        connectingLine.setRangeEnabled(isRange);
+        connectingThumb.setRangeEnabled(isRange);
 
-        connectingLine.setProgressStart(progressStart);
-        connectingLine.setProgressEnd(progressEnd);
+        connectingThumb.setProgressStart(progressStart);
+        connectingThumb.setProgressEnd(progressEnd);
     }
 
     public int getMax() {
@@ -166,7 +166,7 @@ public class RangeBar extends View {
         if (max < 3) {
             max = 3;
         }
-        if (connectingLine != null) connectingLine.setMax(max);
+        if (connectingThumb != null) connectingThumb.setMax(max);
         invalidate();
     }
 
@@ -181,8 +181,8 @@ public class RangeBar extends View {
             progressStart = max;
         }
         this.progressStart = progressStart;
-        if (startIndexPrev != progressStart && connectingLine != null) {
-            connectingLine.setProgressStart(progressStart);
+        if (startIndexPrev != progressStart && connectingThumb != null) {
+            connectingThumb.setProgressStart(progressStart);
             if (onRangeChangeListener != null) {
                 onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
             }
@@ -202,8 +202,8 @@ public class RangeBar extends View {
             progressEnd = max;
         }
         this.progressEnd = progressEnd;
-        if (endIndexPrev != progressEnd && connectingLine != null) {
-            connectingLine.setProgressEnd(progressEnd);
+        if (endIndexPrev != progressEnd && connectingThumb != null) {
+            connectingThumb.setProgressEnd(progressEnd);
             if (onRangeChangeListener != null) {
                 onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
             }
@@ -228,19 +228,19 @@ public class RangeBar extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (connectingLine != null) {
-                    connectingLine.press(x);
-                    connectingLine.update(x);
+                if (connectingThumb != null) {
+                    connectingThumb.press(x);
+                    connectingThumb.update(x);
                 }
                 if (onRangeChangeListener != null) {
                     onRangeChangeListener.onStartTrackingTouch(this);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (connectingLine != null) connectingLine.update(x);
+                if (connectingThumb != null) connectingThumb.update(x);
                 break;
             case MotionEvent.ACTION_UP:
-                if (connectingLine != null) connectingLine.release();
+                if (connectingThumb != null) connectingThumb.release();
                 if (onRangeChangeListener != null) {
                     onRangeChangeListener.onStopTrackingTouch(this);
                 }
@@ -249,9 +249,9 @@ public class RangeBar extends View {
                 return super.onTouchEvent(event);
         }
 
-        if (connectingLine != null) {
-            progressStart = connectingLine.getProgressStart();
-            progressEnd = connectingLine.getProgressEnd();
+        if (connectingThumb != null) {
+            progressStart = connectingThumb.getProgressStart();
+            progressEnd = connectingThumb.getProgressEnd();
         }
 
         if (progressStart != startIndexPrev || progressEnd != endIndexPrev) {
@@ -276,7 +276,7 @@ public class RangeBar extends View {
         return super.dispatchTouchEvent(event);
     }
 
-    public int getDefaultColorTint() {
+    private int getDefaultRangeColor() {
         TypedValue typedValue = new TypedValue();
 
         TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorAccent});
