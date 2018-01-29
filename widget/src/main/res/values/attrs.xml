@@ -6,6 +6,8 @@
         <attr name="startIndex" format="integer" />
         <attr name="endIndex" format="integer" />
         <attr name="colorTint" format="reference|color" />
+        <attr name="thumbRadius" format="integer" />
+        <attr name="barHeight" format="integer"/>
     </declare-styleable>
 
 </resources>

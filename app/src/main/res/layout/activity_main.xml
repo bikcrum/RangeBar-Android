@@ -18,6 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:max="20"
+        app:colorTint="@color/colorAccent"
         android:layout_centerInParent="true"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

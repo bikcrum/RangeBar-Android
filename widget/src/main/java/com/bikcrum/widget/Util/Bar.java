@@ -3,6 +3,7 @@ package com.bikcrum.widget.Util;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.bikcrum.widget.RangeBar;
@@ -27,6 +28,14 @@ public class Bar {
 
     private Paint paint = new Paint();
 
+    protected enum Action {
+        PRESS_START_THUMB,
+        PRESS_END_THUMB,
+        RELEASE
+    }
+
+    private Action action;
+
     public Bar(int color, int width, int windowWidth, int windowHeight, int hPadding) {
         this.color = color;
         this.width = width;
@@ -35,7 +44,7 @@ public class Bar {
         this.hPadding = hPadding;
 
         start.x = hPadding;
-        end.y = start.y = windowHeight/2f;
+        end.y = start.y = windowHeight / 2f;
         end.x = windowWidth - hPadding;
 
         initPaint();
@@ -45,21 +54,70 @@ public class Bar {
         paint = new Paint();
         paint.setStrokeWidth(width);
         paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setDither(true);
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(color);
     }
 
     public void show(Canvas canvas) {
-        //Log.d(TAG, "x1 = " + hPadding + ",y1=" + (windowHeight / 2f) + ",x2=" + (width - hPadding) + "y,2=" + (windowHeight / 2f));
-        canvas.drawLine(start.x,start.y,end.x,end.y, paint);
+        canvas.drawLine(start.x, start.y, end.x, end.y, paint);
     }
 
-    public void update(float x1, float x2, int max) {
+    public void update(float x, int max) {
+
         float stepGap = (windowWidth - hPadding * 2f) / max;
 
-        int startIndex = Math.round((x1 - hPadding) / stepGap);
+        int index = Math.round((x - hPadding) / stepGap);
 
-        Log.d(TAG, "start iundex = " + startIndex);
+        float newX = hPadding + index * stepGap;
 
-        start.x = hPadding + startIndex * stepGap;
+        if (newX < 0 || newX > windowWidth) {
+            return;
+        }
+
+        if (action == Action.PRESS_START_THUMB) {
+            start.x = newX;
+        } else if (action == Action.PRESS_END_THUMB) {
+            end.x = newX;
+        }
     }
+
+    public void press(float x) {
+        if (Math.abs(start.x - x) < Math.abs(end.x - x)) {
+            action = Action.PRESS_START_THUMB;
+        } else {
+            action = Action.PRESS_END_THUMB;
+        }
+
+    }
+
+    public void release() {
+        action = Action.RELEASE;
+    }
+
+    public int getIndex(float x, int max) {
+        float stepGap = (windowWidth - hPadding * 2f) / max;
+        return Math.round((x - hPadding) / stepGap);
+    }
+
+    protected PointF getStart() {
+        return start;
+    }
+
+    protected PointF getEnd() {
+        return end;
+    }
+
+    protected Paint getPaint() {
+        return paint;
+    }
+
+    public int gethPadding() {
+        return hPadding;
+    }
+
+    protected Action getAction() {
+        return action;
+    }
+
 }

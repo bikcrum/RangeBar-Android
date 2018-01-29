@@ -5,15 +5,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Path;
-import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.bikcrum.widget.Util.Bar;
-import com.bikcrum.widget.Util.Bound;
+import com.bikcrum.widget.Util.ConnectingLine;
 
 /**
  * Created by LENOVO on 1/17/2018.
@@ -29,18 +27,13 @@ public class RangeBar extends View {
 
     //local vars
 
-
     //local vars
-    private int thumbWidth = 30;
-    private int thumbWidthPressed = 40;
-    private int barWidth = 6;
+    private int thumbRadius;
+    private int barHeight;
 
     private Bar bar;
-    private Bar connectingLine;
-    private Path path;
+    private ConnectingLine connectingLine;
 
-
-    public Bound bound = new Bound();
 
     public RangeBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,6 +48,8 @@ public class RangeBar extends View {
         startIndex = a.getInteger(R.styleable.RangeBar_startIndex, 0);
         endIndex = a.getInteger(R.styleable.RangeBar_endIndex, max - 1);
         colorTint = a.getColor(R.styleable.RangeBar_colorTint, Color.parseColor("#FF4081"));
+        thumbRadius = a.getDimensionPixelSize(R.styleable.RangeBar_thumbRadius, 25);
+        barHeight = a.getDimensionPixelSize(R.styleable.RangeBar_barHeight, 8);
 
         a.recycle();
 
@@ -74,12 +69,12 @@ public class RangeBar extends View {
         int desiredHeight = 40;
 
 
-        if (Math.max(thumbWidthPressed, barWidth) > desiredHeight) {
-            desiredHeight = Math.max(thumbWidthPressed, barWidth);
+        if (Math.max(thumbRadius * 2, barHeight) > desiredHeight) {
+            desiredHeight = Math.max(thumbRadius * 2, barHeight);
         }
 
-        if (Math.max(thumbWidthPressed, barWidth) > desiredWidth) {
-            desiredWidth = Math.max(thumbWidthPressed, barWidth);
+        if (Math.max(thumbRadius * 2, barHeight) > desiredWidth) {
+            desiredWidth = Math.max(thumbRadius * 2, barHeight);
         }
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -123,25 +118,8 @@ public class RangeBar extends View {
         super.onDraw(canvas);
 
         bar.show(canvas);
-/*
-        bar.show(canvas);
-        connectingLine.show(canvas, bar, startThumbPoint.x, endThumbPoint.x);
-        startThumb.show(canvas, bar, startThumbPoint.x);
-        endThumb.show(canvas, bar, endThumbPoint.x);
+        connectingLine.show(canvas);
 
-        if (actionDown) {
-            startThumb.press();
-            endThumb.press();
-        } else {
-            startThumb.release();
-            endThumb.release();
-        }
-/*
-
-        canvas.drawCircle(endThumbPoint.x, endThumbPoint.y, radius, paint);
-        canvas.drawCircle(startThumbPoint.x, startThumbPoint.y, radius, paint);
-
-        canvas.drawCircle(endThumbPoint.x, endThumbPoint.y, radius, paint);*/
     }
 
     /*
@@ -172,34 +150,8 @@ public class RangeBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        bar = new Bar(Color.LTGRAY, barWidth, w, h, thumbWidthPressed);
-
-        //startThumb = new Thumb(colorTint, 1, widget);
-        //endThumb = new Thumb(colorTint, max - 2, widget);
-
-        //    startThumb = new Thumb(colorTint, thumbWidth, thumbWidthPressed);
-        //     endThumb = new Thumb(colorTint, thumbWidth, thumbWidthPressed);
-
-        //calculate different sizes according to thumb width/height
-
-        //     startPoint = new PointF(thumbWidthPressed / 2f, h / 2f);
-        //  endPoint = new PointF(w - thumbWidthPressed / 2f, h / 2f);
-
-        //   startPoint = widget.getStartBarPoint();
-        //    endPoint = widget.getEndBarPoint();
-
-        //   startThumbPoint = new PointF(thumbWidthPressed / 2f, h / 2f);
-        //    endThumbPoint = new PointF(w - thumbWidthPressed / 2f, h / 2f);
-
-        //   barLength = w - thumbWidthPressed;
-
-        //    stepGap = barLength / max;
-
-        //    print("steps gap = " + stepGap);
-
-        //   bar = new Bar(barWidth, Color.LTGRAY, w - thumbWidthPressed, new PointF(thumbWidthPressed / 2f, h / 2f));
-        //    connectingLine = new ConnectingLine(barWidth, colorTint);
-
+        bar = new Bar(Color.LTGRAY, barHeight, w, h, thumbRadius);
+        connectingLine = new ConnectingLine(colorTint, barHeight, w, h, thumbRadius);
 
     }
 
@@ -207,83 +159,29 @@ public class RangeBar extends View {
         Log.i("biky", str);
     }
 
-    boolean nearStartThumb = true;
-    boolean actionDown = false;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {
             return super.onTouchEvent(event);
         }
         float x = event.getX();
-        float y = event.getY();
 
-        PointF current = new PointF(x, y);
-
-       bar.update(x, 200, 20);
-
-/*
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
-
-                actionDown = true;
-                nearStartThumb = nearStartThumb(new PointF(x, y));
-
-                if (x >= startPoint.x && x <= endPoint.x) {
-
-                    if (nearStartThumb) {
-
-                        startIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
-                        print("start index = " + startIndex);
-
-                        startThumbPoint.x = startIndex * stepGap + startPoint.x;
-
-                    } else {
-
-                        endIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
-                        print("end index = " + endIndex);
-
-                        endThumbPoint.x = endIndex * stepGap + startPoint.x;
-                    }
-                }
-
+                connectingLine.press(x);
+                connectingLine.update(x, 20);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (x >= startPoint.x && x <= endPoint.x) {
-
-                    if (nearStartThumb) {
-
-                        startIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
-                        print("start index = " + startIndex);
-
-                        startThumbPoint.x = startIndex * stepGap + startPoint.x;
-
-                    } else {
-
-                        endIndex = Math.round((x - thumbWidthPressed / 2f) / stepGap);
-                        print("end index = " + endIndex);
-
-                        endThumbPoint.x = endIndex * stepGap + startPoint.x;
-                    }
-                }
+                connectingLine.update(x, 20);
                 break;
             case MotionEvent.ACTION_UP:
-                actionDown = false;
+                connectingLine.release();
                 break;
             default:
-                actionDown = false;
                 return super.onTouchEvent(event);
         }
-*/
 
-
-        //  Log.i("biky", "x = " + x + " y = " + y);
         invalidate();
         return true;
     }
-/*
-    boolean nearStartThumb(PointF pointF) {
-        return Math.abs(startThumbPoint.x - pointF.x) < Math.abs(endThumbPoint.x - pointF.x);
-    }*/
 }
