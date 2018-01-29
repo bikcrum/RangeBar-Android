@@ -25,7 +25,7 @@ public class RangeBar extends View {
     private int max;
     private int progressStart;
     private int progressEnd;
-    private int colorTint;
+    private int color;
 
     private float thumbRadius;
     private float barHeight;
@@ -55,9 +55,9 @@ public class RangeBar extends View {
 
         max = a.getInteger(R.styleable.RangeBar_max, 100);
         try {
-            colorTint = a.getColor(R.styleable.RangeBar_colorTint, getDefaultColorTint());
+            color = a.getColor(R.styleable.RangeBar_thumbColor, getDefaultColorTint());
         } catch (Exception e) {
-            colorTint = getDefaultColorTint();
+            color = getDefaultColorTint();
             e.printStackTrace();
         }
 
@@ -130,7 +130,14 @@ public class RangeBar extends View {
         super.onDraw(canvas);
 
         if (bar != null) bar.show(canvas);
-        if (connectingLine != null) connectingLine.show(canvas);
+        if (connectingLine != null) {
+            if(isEnabled()){
+                connectingLine.setColor(color);
+            }else{
+                connectingLine.setColor(Color.GRAY);
+            }
+            connectingLine.show(canvas);
+        }
     }
 
     @Override
@@ -140,7 +147,7 @@ public class RangeBar extends View {
         bar = new Bar(Color.LTGRAY, barHeight, w, h, thumbRadius);
 
         if(isEnabled()) {
-            connectingLine = new ConnectingLine(colorTint, barHeight, w, h, thumbRadius, max);
+            connectingLine = new ConnectingLine(color, barHeight, w, h, thumbRadius, max);
         }else{
             connectingLine = new ConnectingLine(Color.GRAY, barHeight, w, h, thumbRadius, max);
         }
@@ -285,16 +292,5 @@ public class RangeBar extends View {
         a.recycle();
 
         return color;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        if (enabled) {
-            connectingLine.setColor(colorTint);
-        } else {
-            connectingLine.setColor(Color.GRAY);
-        }
-        invalidate();
     }
 }
