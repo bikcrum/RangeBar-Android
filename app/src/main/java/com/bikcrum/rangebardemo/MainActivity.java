@@ -11,7 +11,6 @@ import com.bikcrum.widget.interfaces.OnRangeChangeListener;
 public class MainActivity extends AppCompatActivity {
 
     private RangeBar bar;
-    private SeekBar sBar;
     private final static String TAG = "biky";
 
     @Override
