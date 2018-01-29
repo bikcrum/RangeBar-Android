@@ -20,7 +20,7 @@ allprojects {
 dependencies {
     ...
     // Also add this line
-    compile 'com.github.bikcrum:RangeBar-Android:1.1'
+    compile 'com.github.bikcrum:RangeBar-Android:1.3'
 }
 
 
