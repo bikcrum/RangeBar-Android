@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bar = findViewById(R.id.range_bar);
+        RangeBar bar = findViewById(R.id.range_bar);
 
         bar.setOnRangeChangeListener(new OnRangeChangeListener() {
             @Override
