@@ -139,7 +139,11 @@ public class RangeBar extends View {
 
         bar = new Bar(Color.LTGRAY, barHeight, w, h, thumbRadius);
 
-        connectingLine = new ConnectingLine(colorTint, barHeight, w, h, thumbRadius, max);
+        if(isEnabled()) {
+            connectingLine = new ConnectingLine(colorTint, barHeight, w, h, thumbRadius, max);
+        }else{
+            connectingLine = new ConnectingLine(Color.GRAY, barHeight, w, h, thumbRadius, max);
+        }
         connectingLine.setRangeEnabled(isRange);
 
         connectingLine.setProgressStart(progressStart);
@@ -256,6 +260,15 @@ public class RangeBar extends View {
         return true;
     }
 
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (getParent() != null && event.getAction() == MotionEvent.ACTION_DOWN) {
+            getParent().requestDisallowInterceptTouchEvent(true);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
     public int getDefaultColorTint() {
         TypedValue typedValue = new TypedValue();
 
@@ -272,5 +285,16 @@ public class RangeBar extends View {
         a.recycle();
 
         return color;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (enabled) {
+            connectingLine.setColor(colorTint);
+        } else {
+            connectingLine.setColor(Color.GRAY);
+        }
+        invalidate();
     }
 }

@@ -54,8 +54,10 @@ public class ConnectingLine extends Bar {
     }
 
     public void update(float x) {
-        if (x < getThumbRadius() || x > getWindowWidth() - getThumbRadius()) {
-            return;
+        if (x < getThumbRadius()) {
+            x = getThumbRadius();
+        } else if (x > getWindowWidth() - getThumbRadius()) {
+            x = getWindowWidth() - getThumbRadius();
         }
 
         int progress = Math.round((x - getThumbRadius()) / stepGap);
@@ -108,5 +110,9 @@ public class ConnectingLine extends Bar {
         action = Action.RELEASE;
         startThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
         endThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
+    }
+
+    public void setColor(int color) {
+        super.setColor(color);
     }
 }

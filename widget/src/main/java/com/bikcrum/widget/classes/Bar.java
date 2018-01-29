@@ -21,7 +21,7 @@ public class Bar {
 
     private Paint paint = new Paint();
 
-    public Bar(int color, float height, int windowWidth, int windowHeight,float thumbRadius) {
+    public Bar(int color, float height, int windowWidth, int windowHeight, float thumbRadius) {
         this.color = color;
         this.height = height;
         this.windowWidth = windowWidth;
@@ -68,5 +68,9 @@ public class Bar {
 
     protected int getWindowWidth() {
         return windowWidth;
+    }
+
+    protected void setColor(int color) {
+        paint.setColor(color);
     }
 }
