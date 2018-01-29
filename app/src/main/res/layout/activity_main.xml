@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#eeeeee"
+    android:orientation="vertical"
     tools:context="com.bikcrum.rangebardemo.MainActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        />
-
     <com.bikcrum.widget.RangeBar
+        android:id="@+id/range_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:max="20"
-        app:colorTint="@color/colorAccent"
-        android:layout_centerInParent="true"/>
+        android:padding="20dp"
+        app:max="3" />
 
     <SeekBar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="20"
+        android:id="@+id/seekbar"
+        android:padding="100dp" />
 
-</RelativeLayout>
+</LinearLayout>
