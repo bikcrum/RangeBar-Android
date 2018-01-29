@@ -1,7 +1,6 @@
 # RangeBar-Android
-## Android doesn't provide rangebar officially because of its limited use. But don't worry you can find it here.
 
-* Include RangeBar callback to listen for progress changes.
+### Android doesn't provide rangebar officially because of its limited use. But don't worry you can find it here.
 
 ## Here is how to use it
 
