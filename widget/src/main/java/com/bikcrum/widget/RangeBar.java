@@ -160,15 +160,21 @@ public class RangeBar extends View {
     }
 
     public int getProgressStart() {
-        return progressStart;
+        return Math.min(progressStart, progressEnd);
     }
 
     public void setProgressStart(int progressStart) {
+        //always progress is greater so change end progress is start progress is greater
+        if (progressStart > progressEnd) {
+            setProgressEnd(progressStart);
+            progressStart = progressEnd;
+        }
         if (progressStart < 0) {
             progressStart = 0;
         } else if (progressStart > max) {
             progressStart = max;
         }
+
         this.progressStart = progressStart;
         if (startIndexPrev != progressStart && connectingLine != null) {
             connectingLine.setProgressStart(progressStart);
@@ -181,10 +187,15 @@ public class RangeBar extends View {
     }
 
     public int getProgressEnd() {
-        return progressEnd;
+        return Math.max(progressStart, progressEnd);
     }
 
     public void setProgressEnd(int progressEnd) {
+        //always progress is greater so change end progress is start progress is greater
+        if (progressEnd < progressStart) {
+            setProgressStart(progressEnd);
+            progressEnd = progressStart;
+        }
         if (progressEnd < 0) {
             progressEnd = 0;
         } else if (progressEnd > max) {
