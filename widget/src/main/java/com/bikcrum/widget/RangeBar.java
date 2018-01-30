@@ -69,7 +69,7 @@ public class RangeBar extends View {
         }
 
         progressStart = a.getInteger(R.styleable.RangeBar_progressStart, 0);
-        progressEnd = a.getInteger(R.styleable.RangeBar_progressEnd, max - 1);
+        progressEnd = a.getInteger(R.styleable.RangeBar_progressEnd, max);
         isRange = a.getBoolean(R.styleable.RangeBar_isRange, true);
 
         a.recycle();
