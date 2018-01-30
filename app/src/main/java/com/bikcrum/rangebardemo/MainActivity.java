@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(RangeBar bar) {
+            public void onStartTrackingTouch(RangeBar bar, int startIndex, int endIndex) {
                 Log.d(TAG, "on start tracking touch");
 
             }
 
             @Override
-            public void onStopTrackingTouch(RangeBar bar) {
+            public void onStopTrackingTouch(RangeBar bar, int startIndex, int endIndex) {
                 Log.d(TAG, "on end tracking touch");
             }
         });
