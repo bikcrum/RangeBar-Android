@@ -179,7 +179,7 @@ public class RangeBar extends View {
         if (startIndexPrev != progressStart && connectingLine != null) {
             connectingLine.setProgressStart(progressStart);
             if (onRangeChangeListener != null) {
-                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
+                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), false);
             }
             startIndexPrev = progressStart;
             invalidate();
@@ -205,7 +205,7 @@ public class RangeBar extends View {
         if (endIndexPrev != progressEnd && connectingLine != null) {
             connectingLine.setProgressEnd(progressEnd);
             if (onRangeChangeListener != null) {
-                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), true);
+                onRangeChangeListener.onRangeChanged(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd), false);
             }
             endIndexPrev = progressEnd;
             invalidate();
@@ -233,7 +233,7 @@ public class RangeBar extends View {
                     connectingLine.update(x);
                 }
                 if (onRangeChangeListener != null) {
-                    onRangeChangeListener.onStartTrackingTouch(this);
+                    onRangeChangeListener.onStartTrackingTouch(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd));
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -242,7 +242,7 @@ public class RangeBar extends View {
             case MotionEvent.ACTION_UP:
                 if (connectingLine != null) connectingLine.release();
                 if (onRangeChangeListener != null) {
-                    onRangeChangeListener.onStopTrackingTouch(this);
+                    onRangeChangeListener.onStopTrackingTouch(this, Math.min(progressStart, progressEnd), Math.max(progressStart, progressEnd));
                 }
                 break;
             default:
