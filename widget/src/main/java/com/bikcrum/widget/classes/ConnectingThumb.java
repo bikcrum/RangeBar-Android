@@ -6,7 +6,7 @@ import android.graphics.Canvas;
  * Created by LENEVO on 1/29/2018.
  */
 
-public class ConnectingLine extends Bar {
+public class ConnectingThumb extends Bar {
 
     private final float THUMB_RELEASE_SCALE = 0.8f;
     private float startThumbRadius;
@@ -27,7 +27,7 @@ public class ConnectingLine extends Bar {
     private Action action;
 
 
-    public ConnectingLine(int color, float height, int windowWidth, int windowHeight, float thumbRadius, int max) {
+    public ConnectingThumb(int color, float height, int windowWidth, int windowHeight, float thumbRadius, int max) {
         super(color, height, windowWidth, windowHeight, thumbRadius);
 
         startThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
@@ -54,8 +54,10 @@ public class ConnectingLine extends Bar {
     }
 
     public void update(float x) {
-        if (x < getThumbRadius() || x > getWindowWidth() - getThumbRadius()) {
-            return;
+        if (x < getThumbRadius()) {
+            x = getThumbRadius();
+        } else if (x > getWindowWidth() - getThumbRadius()) {
+            x = getWindowWidth() - getThumbRadius();
         }
 
         int progress = Math.round((x - getThumbRadius()) / stepGap);
@@ -108,5 +110,9 @@ public class ConnectingLine extends Bar {
         action = Action.RELEASE;
         startThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
         endThumbRadius = getThumbRadius() * THUMB_RELEASE_SCALE;
+    }
+
+    public void setRangeColor(int color) {
+        super.setColor(color);
     }
 }
